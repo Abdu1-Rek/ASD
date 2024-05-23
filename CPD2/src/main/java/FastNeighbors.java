@@ -1,3 +1,5 @@
+import java.awt.geom.Arc2D;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -78,7 +80,7 @@ public class FastNeighbors {
         return closestPair;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Vec2[] points = {
                 new Vec2(10, 2),
                 new Vec2(3, 40),
@@ -87,11 +89,27 @@ public class FastNeighbors {
                 new Vec2(9, 10)
         };
 
+        int np = points.length;
+        double[][] table = new double [points.length+2][2];
+        for (int i = 0; i < points.length; i++) {
+            table[i][0] = points[i].getX();
+            table[i][1] = points[i].getY();
+        }
+
+
 
         FastNeighbors fastNeighbors = new FastNeighbors(points);
         Vec2[] result = fastNeighbors.findClosestPair();
         System.out.println("Closest pair: " + result[0] + " and " + result[1]);
         System.out.println("Distance: " + fastNeighbors.distance(result[0], result[1]));
-        }
+
+        table[np][0] = result[0].getX();
+        table[np][1] = result[0].getY();
+        table[np+1][0] = result[1].getX();
+        table[np+1][1] = result[1].getY();
+
+        System.out.println();
+        CSVExporter.writeFile(table, "./data.csv",";" ,new String[]{"x", "y"});
+    }
     }
 
